@@ -3,12 +3,11 @@ C++ binary reader &amp; writer implementation for reading + writing binary data
 
 Usage:
 ```cpp
-#include <iostream>
 #include "BinaryRW.h"
 
 int main() {
     /** Writing to buffer **/
-    
+
     BinaryWriter writer;
 
     writer.writeStr("test");
@@ -42,7 +41,10 @@ int main() {
     std::cout << "x4: " << x4 << "\n";
     std::cout << "x5: " << x5 << "\n";
     std::cout << "x6: " << x6 << "\n";
-    std::cout << "x7: " << x7 << "\n";
+    std::cout << "x7: " << x7 << "\n\n";
+    std::cout << "Buffer: ";
+
+    reader.printBytes();
 
     writer.clearBuffer();
 }
@@ -57,4 +59,6 @@ x4: 2147483647
 x5: 9223372036854775807
 x6: 12.34
 x7: 56.789
+
+Buffer: { 74 65 73 74 01 40 ff 7f ff ff ff 7f ff ff ff ff ff ff ff 7f a4 70 45 41 00 00 00 00 fe 64 4c 40 }
 ```
