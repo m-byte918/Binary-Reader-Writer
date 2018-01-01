@@ -1,22 +1,23 @@
 #pragma once
-#include <vector>
-#include <string>
-#include <cstring>
+#include <vector>   // buffers
+#include <string>   // writeStr(), readStr()
+#include <cstring>  // writeStr(const char *)
+#include <iostream> // printBytes()
+#include <iomanip>  // printBytes()
 
 class BinaryWriter {
     private:
-        std::vector<unsigned char> buffer;
+        std::vector<unsigned char> _buffer;
 
     public:
         BinaryWriter();
 
-        void setBuffer(std::vector<unsigned char> &_buffer);
+        void setBuffer(std::vector<unsigned char> &buffer);
         std::vector<unsigned char> &getBuffer();
         void clearBuffer();
 
-        template <typename T>
-        void writeBytes(const T &val, const bool &LE);
-        
+        void writeBytes(const auto &val, const bool &LE);
+
         // Endianless
         void writeStr(const std::string &str);
         void writeStr(const char *str);
@@ -55,21 +56,23 @@ class BinaryWriter {
 
 class BinaryReader {
     private:
-        std::vector<unsigned char> buffer;
-        unsigned long long offset = 0;
+        std::vector<unsigned char> _buffer;
+        unsigned long long _offset = 0;
 
     public:
-        BinaryReader(std::vector<unsigned char> &_buffer);
-        
-        void setBuffer(std::vector<unsigned char> &_buffer);
-        void skipBytes(const unsigned long long &len);
+        BinaryReader(std::vector<unsigned char> &buffer);
+
+        void setBuffer(std::vector<unsigned char> &buffer);
         void reset();
 
         template <typename T>
         T readBytes(const unsigned char &endianness);
-        
+        void skipBytes(const unsigned long long &len);
+        void printBytes();
+
         // Endianless
-        std::string readStr(const unsigned int &length);
+        std::string readStr(const unsigned long long &len);
+        std::string readStr();
         bool readBool();
 
         // Little Endian
