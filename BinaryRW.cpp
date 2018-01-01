@@ -21,17 +21,17 @@ void BinaryWriter::writeBytes(const T &val, const bool &LE) {
     unsigned const char *array = reinterpret_cast<unsigned const char *>(&val);
 
     if (LE == true) {
-        for (unsigned long i = 0; i < sizeof(T); ++i)
+        for (unsigned int i = 0; i < sizeof(T); ++i)
             buffer.push_back(array[i]);
     } else {
-        for (int i = sizeof(T) - 1; i >= 0; --i)
+        for (unsigned int i = sizeof(T) - 1; i >= 0; --i)
             buffer.push_back(array[i]);
     }
 }
 
 //========== Endianless ==========//
 
-void BinaryWriter::writeStr(std::string &str) {
+void BinaryWriter::writeStr(const std::string &str) {
     for (unsigned int i = 0; i < str.size(); ++i)
         writeBytes<const char>(str[i], false);
 }
@@ -124,8 +124,12 @@ BinaryWriter::~BinaryWriter() {
 
 /******************** BINARY READER ********************/
 
-BinaryReader::BinaryReader(std::vector<unsigned char> &_buffer) {
-    buffer = _buffer;
+BinaryReader::BinaryReader(std::vector<unsigned char> &_buffer) : buffer(_buffer) {
+}
+
+void BinaryReader::setBuffer(std::vector<unsigned char> &_buffer) {
+	buffer.clear();
+	buffer = _buffer;
 }
 
 void BinaryReader::skipBytes(const unsigned long long &len) {
