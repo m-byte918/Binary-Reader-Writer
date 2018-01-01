@@ -18,7 +18,7 @@ class BinaryWriter {
         void writeBytes(const T &val, const bool &LE);
         
         // Endianless
-        void writeStr(std::string &str);
+        void writeStr(const std::string &str);
         void writeStr(const char *str);
         void writeBool(const bool &val);
 
@@ -61,6 +61,7 @@ class BinaryReader {
     public:
         BinaryReader(std::vector<unsigned char> &_buffer);
         
+        void setBuffer(std::vector<unsigned char> &_buffer);
         void skipBytes(const unsigned long long &len);
         void reset();
 
