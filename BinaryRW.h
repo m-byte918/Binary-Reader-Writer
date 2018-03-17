@@ -16,7 +16,8 @@ class BinaryWriter {
         std::vector<unsigned char> &getBuffer();
         void clearBuffer();
 
-        void writeBytes(const auto &val, const bool &LE);
+        template <class T>
+        void writeBytes(T &val, const bool &LE);
 
         // Endianless
         void writeStr(const std::string &str);
