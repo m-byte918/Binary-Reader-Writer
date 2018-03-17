@@ -16,7 +16,8 @@ void BinaryWriter::clearBuffer() {
     _buffer.clear();
 }
 
-void BinaryWriter::writeBytes(const auto &val, const bool &LE) {
+template <class T>
+void BinaryWriter::writeBytes(T &val, const bool &LE) {
     unsigned const char *array = reinterpret_cast<unsigned const char *>(&val);
 
     if (LE == true) {
@@ -31,41 +32,41 @@ void BinaryWriter::writeBytes(const auto &val, const bool &LE) {
 //========== Endianless ==========//
 
 void BinaryWriter::writeStr(const std::string &str) {
-    for (const auto &s : str) writeBytes(s, false);
+    for (const auto &s : str) writeBytes<const char>(s, false);
 }
 void BinaryWriter::writeStr(const char* str) {
     for (unsigned int i = 0; i < std::strlen(str); ++i)
-        writeBytes(str[i], false);
+        writeBytes<const char>(str[i], false);
 }
 void BinaryWriter::writeBool(const bool &val) {
-    writeBytes(val, true);
+    writeBytes<const bool>(val, true);
 }
 
 //========== Little Endian ==========//
 
 void BinaryWriter::writeInt8_LE(const char &val) {
-    writeBytes(val, true);
+    writeBytes<const char>(val, true);
 }
 void BinaryWriter::writeInt16_LE(const short &val) {
-    writeBytes(val, true);
+    writeBytes<const short>(val, true);
 }
 void BinaryWriter::writeInt32_LE(const int &val) {
-    writeBytes(val, true);
+    writeBytes<const int>(val, true);
 }
 void BinaryWriter::writeInt64_LE(const long long &val) {
-    writeBytes(val, true);
+    writeBytes<const long long>(val, true);
 }
 void BinaryWriter::writeUInt8_LE(const unsigned char &val) {
-    writeBytes(val, true);
+    writeBytes<const unsigned char>(val, true);
 }
 void BinaryWriter::writeUInt16_LE(const unsigned short &val) {
-    writeBytes(val, true);
+    writeBytes<const unsigned short>(val, true);
 }
 void BinaryWriter::writeUInt32_LE(const unsigned int &val) {
-    writeBytes(val, true);
+    writeBytes<const unsigned int>(val, true);
 }
 void BinaryWriter::writeUInt64_LE(const unsigned long long &val) {
-    writeBytes(val, true);
+    writeBytes<const unsigned long long>(val, true);
 }
 void BinaryWriter::writeFloat_LE(const float &val) {
     union { float fnum; unsigned int inum; } u;
@@ -81,28 +82,28 @@ void BinaryWriter::writeDouble_LE(const double &val) {
 //========== Big Endian ==========//
 
 void BinaryWriter::writeInt8_BE(const char &val) {
-    writeBytes(val, false);
+    writeBytes<const char>(val, false);
 }
 void BinaryWriter::writeInt16_BE(const short &val) {
-    writeBytes(val, false);
+    writeBytes<const short>(val, false);
 }
 void BinaryWriter::writeInt32_BE(const int &val) {
-    writeBytes(val, false);
+    writeBytes<const int>(val, false);
 }
 void BinaryWriter::writeInt64_BE(const long long &val) {
-    writeBytes(val, false);
+    writeBytes<const long long>(val, false);
 }
 void BinaryWriter::writeUInt8_BE(const unsigned char &val) {
-    writeBytes(val, false);
+    writeBytes<const unsigned char>(val, false);
 }
 void BinaryWriter::writeUInt16_BE(const unsigned short &val) {
-    writeBytes(val, false);
+    writeBytes<const unsigned short>(val, false);
 }
 void BinaryWriter::writeUInt32_BE(const unsigned int &val) {
-    writeBytes(val, false);
+    writeBytes<const unsigned int>(val, false);
 }
 void BinaryWriter::writeUInt64_BE(const unsigned long long &val) {
-    writeBytes(val, false);
+    writeBytes<const unsigned long long>(val, false);
 }
 void BinaryWriter::writeFloat_BE(const float &val) {
     union { float fnum; unsigned int inum; } u;
@@ -126,8 +127,8 @@ BinaryReader::BinaryReader(std::vector<unsigned char> &buffer) : _buffer(buffer)
 }
 
 void BinaryReader::setBuffer(std::vector<unsigned char> &buffer) {
-	_buffer.clear();
-	_buffer = buffer;
+    _buffer.clear();
+    _buffer = buffer;
 }
 void BinaryReader::reset() {
     _offset = 0;
@@ -135,8 +136,8 @@ void BinaryReader::reset() {
 
 template <typename T>
 T BinaryReader::readBytes(const unsigned char &endianness) {
-    T result;
-    int size = sizeof(T);
+    T result = 0;
+    unsigned int size = sizeof(T);
 
     // Do not overflow
     if (_offset + size > _buffer.size())
@@ -169,11 +170,11 @@ void BinaryReader::skipBytes(const unsigned long long &len) {
     _offset += len;
 }
 void BinaryReader::printBytes() {
-	std::cout << "{ " << std::hex << std::setfill('0');
-	for (const auto &byte : _buffer) {
+    std::cout << "{ " << std::hex << std::setfill('0');
+    for (const auto &byte : _buffer) {
         std::cout << std::setw(2) << (unsigned short)byte << " ";
-	}
-	std::cout << "}\n" << std::dec;
+    }
+    std::cout << "}\n" << std::dec;
 }
 
 //========== Endianless ==========//
@@ -184,7 +185,7 @@ std::string BinaryReader::readStr(const unsigned long long &len) {
     return result;
 }
 std::string BinaryReader::readStr() {
-	return readStr(_buffer.size() - _offset);
+    return readStr(_buffer.size() - _offset);
 }
 bool BinaryReader::readBool() {
     return readBytes<bool>(0);
