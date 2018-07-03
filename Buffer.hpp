@@ -8,7 +8,7 @@ public:
     Buffer(const std::vector<unsigned char>&) noexcept;
 
     void setBuffer(std::vector<unsigned char>&) noexcept;
-    std::vector<unsigned char> &getBuffer() noexcept;
+    std::vector<unsigned char> getBuffer() const noexcept;
     void clearBuffer() noexcept;
 
     std::string byteStr() const noexcept;
@@ -45,7 +45,7 @@ public:
     /************************** Reading ***************************/
 
     void setReadOffset(unsigned long long) noexcept;
-    unsigned long long &getReadOffset() noexcept;
+    unsigned long long getReadOffset() const noexcept;
     template <class T> inline T readBytes(bool LE = true);
 
     bool               readBool() noexcept;
