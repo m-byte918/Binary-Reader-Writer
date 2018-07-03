@@ -3,62 +3,113 @@ C++ binary reader &amp; writer implementation for reading + writing binary data
 
 Usage:
 ```cpp
-#include "BinaryRW.h"
+#include <iostream>
+#include "Buffer.hpp"
 
 int main() {
+    Buffer buf;
+
     /** Writing to buffer **/
 
-    BinaryWriter writer;
+    buf.writeBool(true);
+    buf.writeStr("Hello!");
+    buf.writeInt8(64);
+    buf.writeUInt8(228);
 
-    writer.writeStr("test");
-    writer.writeBool(true);
-    writer.writeInt8_LE(64);
-    writer.writeInt16_LE(32767);
-    writer.writeInt32_LE(2147483647);
-    writer.writeInt64_LE(9223372036854775807ll);
-    writer.writeFloat_LE(12.34f);
-    writer.writeDouble_LE(56.789f);
+    buf.writeInt16_LE(-32768);
+    buf.writeInt16_BE(-32768);
+    buf.writeUInt16_LE(65535);
+    buf.writeUInt16_BE(65535);
 
-    std::vector<unsigned char> buffer = writer.getBuffer();
+    buf.writeInt32_LE(-2147483648);
+    buf.writeInt32_BE(-2147483648);
+    buf.writeUInt32_LE(4294967295);
+    buf.writeUInt32_BE(4294967295);
+
+    buf.writeInt64_LE(-9223372036854775808ll);
+    buf.writeInt64_BE(-9223372036854775808ll);
+    buf.writeUInt64_LE(18446744073709551615ll);
+    buf.writeUInt64_BE(18446744073709551615ll);
+
+    buf.writeFloat_LE(3.4e+38f);
+    buf.writeFloat_BE(3.4e-38f);
+    buf.writeDouble_LE(1.7e+308);
+    buf.writeDouble_BE(1.7e-308);
 
     /** Reading from buffer **/
 
-    BinaryReader reader(buffer);
+    bool               x  = buf.readBool();
+    std::string        x1 = buf.readStr(6);
+    char               x2 = buf.readInt8();
+    unsigned char      x3 = buf.readUInt8();
 
-    std::string x = reader.readStr(4);
-    bool       x1 = reader.readBool();
-    char       x2 = reader.readInt8_LE();
-    short      x3 = reader.readInt16_LE();
-    int        x4 = reader.readInt32_LE();
-    long long  x5 = reader.readInt64_LE();
-    float      x6 = reader.readFloat_LE();
-    double     x7 = reader.readDouble_LE();
+    short              x4 = buf.readInt16_LE();
+    short              x5 = buf.readInt16_BE();
+    unsigned short     x6 = buf.readUInt16_LE();
+    unsigned short     x7 = buf.readUInt16_BE();
 
-    std::cout << "x:  " <<  x << "\n";
-    std::cout << "x1: " << x1 << "\n";
-    std::cout << "x2: " << x2 << "\n";
-    std::cout << "x3: " << x3 << "\n";
-    std::cout << "x4: " << x4 << "\n";
-    std::cout << "x5: " << x5 << "\n";
-    std::cout << "x6: " << x6 << "\n";
-    std::cout << "x7: " << x7 << "\n\n";
-    std::cout << "Buffer: ";
+    int                x8  = buf.readInt32_LE();
+    int                x9  = buf.readInt32_BE();
+    unsigned int       x10 = buf.readUInt32_LE();
+    unsigned int       x11 = buf.readUInt32_BE();
 
-    reader.printBytes();
+    long long          x12 = buf.readInt64_LE();
+    long long          x13 = buf.readInt64_BE();
+    unsigned long long x14 = buf.readUInt64_LE();
+    unsigned long long x15 = buf.readInt64_BE();
 
-    writer.clearBuffer();
+    float              x16 = buf.readFloat_LE();
+    float              x17 = buf.readFloat_BE();
+    double             x18 = buf.readDouble_LE();
+    double             x19 = buf.readDouble_BE();
+
+    std::cout << "x:  "  << x   << "\n"
+              << "x1: "  << x1  << "\n"
+              << "x2: "  << x2  << "\n"
+              << "x3: "  << x3  << "\n"
+              << "x4: "  << x4  << "\n"
+              << "x5: "  << x5  << "\n"
+              << "x6: "  << x6  << "\n"
+              << "x7: "  << x7  << "\n"
+              << "x8: "  << x8  << "\n"
+              << "x9: "  << x9  << "\n"
+              << "x10: " << x10 << "\n"
+              << "x11: " << x11 << "\n"
+              << "x12: " << x12 << "\n"
+              << "x13: " << x13 << "\n"
+              << "x14: " << x14 << "\n"
+              << "x15: " << x15 << "\n"
+              << "x16: " << x16 << "\n"
+              << "x17: " << x17 << "\n"
+              << "x18: " << x18 << "\n"
+              << "x19: " << x19 << "\n\n"
+              << "<Buffer " << buf.byteStr() << ">";
+
+    buf.clearBuffer(); // clear buffer contents
 }
 ```
 Results:
 ```
-x:  test
-x1: 1
+x:  1
+x1: Hello!
 x2: @
-x3: 32767
-x4: 2147483647
-x5: 9223372036854775807
-x6: 12.34
-x7: 56.789
+x3: Σ
+x4: -32768
+x5: -32768
+x6: 65535
+x7: 65535
+x8: -2147483648
+x9: -2147483648
+x10: 4294967295
+x11: 4294967295
+x12: -9223372036854775808
+x13: -9223372036854775808
+x14: 18446744073709551615
+x15: 18446744073709551615
+x16: 3.4e+38
+x17: 3.4e-38
+x18: 1.7e+308
+x19: 1.7e-308
 
-Buffer: { 74 65 73 74 01 40 ff 7f ff ff ff 7f ff ff ff ff ff ff ff 7f a4 70 45 41 00 00 00 00 fe 64 4c 40 }
+<Buffer 01 48 65 6c 6c 6f 21 40 e4 00 80 80 00 ff ff ff ff 00 00 00 80 80 00 00 00 ff ff ff ff ff ff ff ff 00 00 00 00 00 00 00 80 80 00 00 00 00 00 00 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 9e c9 7f 7f 01 39 1d 15 76 3b 77 30 d1 42 ee 7f 00 0c 39 6c 98 f8 d8 99 >
 ```
