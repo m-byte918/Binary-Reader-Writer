@@ -12,7 +12,7 @@ Buffer::Buffer(const std::vector<unsigned char> &_buffer) noexcept:
 void Buffer::setBuffer(std::vector<unsigned char> &_buffer) noexcept {
     buffer = _buffer;
 }
-std::vector<unsigned char> &Buffer::getBuffer() noexcept {
+std::vector<unsigned char> Buffer::getBuffer() const noexcept {
     return buffer;
 }
 void Buffer::clearBuffer() noexcept {
@@ -118,7 +118,7 @@ void Buffer::writeDouble_BE(double val) noexcept {
 void Buffer::setReadOffset(unsigned long long newOffset) noexcept {
     readOffset = newOffset;
 }
-unsigned long long &Buffer::getReadOffset() noexcept {
+unsigned long long Buffer::getReadOffset() const noexcept {
     return readOffset;
 }
 template <class T> inline T Buffer::readBytes(bool LE) {
