@@ -12,18 +12,28 @@ Buffer::Buffer(const std::vector<unsigned char> &_buffer) noexcept:
 void Buffer::setBuffer(std::vector<unsigned char> &_buffer) noexcept {
     buffer = _buffer;
 }
-std::vector<unsigned char> Buffer::getBuffer() const noexcept {
+const std::vector<unsigned char> &Buffer::getBuffer() const noexcept {
     return buffer;
 }
-void Buffer::clearBuffer() noexcept {
+void Buffer::clear() noexcept {
     buffer.clear();
+    readOffset = 0;
+    writeOffset = 0;
 }
 
-std::string Buffer::byteStr() const noexcept {
+std::string Buffer::byteStr(bool LE) const noexcept {
     std::stringstream byteStr;
     byteStr << std::hex << std::setfill('0');
-    for (const unsigned char &byte : buffer)
-        byteStr << std::setw(2) << (unsigned short)byte << " ";
+
+    if (LE == true) {
+        for (unsigned long long i = 0; i < buffer.size(); ++i)
+            byteStr << std::setw(2) << (unsigned short)buffer[i] << " ";
+    } else {
+        unsigned long long size = buffer.size();
+        for (unsigned long long i = 0; i < size; ++i)
+            byteStr << std::setw(2) << (unsigned short)buffer[size - i - 1] << " ";
+    }
+
     return byteStr.str();
 }
 
@@ -38,6 +48,11 @@ template <class T> inline void Buffer::writeBytes(const T &val, bool LE) {
         for (unsigned int i = 0; i < size; ++i)
             buffer.push_back(array[size - i - 1]);
     }
+    writeOffset += size;
+}
+
+unsigned long long Buffer::getWriteOffset() const noexcept {
+    return writeOffset;
 }
 
 void Buffer::writeBool(bool val) noexcept {
@@ -216,6 +231,5 @@ double Buffer::readDouble_BE() noexcept {
 }
 
 Buffer::~Buffer() {
-    clearBuffer();
-    setReadOffset(0);
+    clear();
 }
