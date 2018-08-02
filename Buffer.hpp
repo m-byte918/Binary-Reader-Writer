@@ -8,14 +8,15 @@ public:
     Buffer(const std::vector<unsigned char>&) noexcept;
 
     void setBuffer(std::vector<unsigned char>&) noexcept;
-    std::vector<unsigned char> getBuffer() const noexcept;
-    void clearBuffer() noexcept;
+    const std::vector<unsigned char> &getBuffer() const noexcept;
+    void clear() noexcept;
 
-    std::string byteStr() const noexcept;
+    std::string byteStr(bool LE = true) const noexcept;
 
     /************************** Writing ***************************/
 
     template <class T> inline void writeBytes(const T &val, bool LE = true);
+    unsigned long long getWriteOffset() const noexcept;
 
     void writeBool(bool) noexcept;
     void writeStr(const std::string&) noexcept;
@@ -78,4 +79,5 @@ public:
 private:
     std::vector<unsigned char> buffer;
     unsigned long long readOffset = 0;
+    unsigned long long writeOffset = 0;
 };
